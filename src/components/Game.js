@@ -32,7 +32,7 @@ export class Game extends Component {
                 width: 50,
                 height: 50,
                 backgroundColor: 'blue',
-                display: 'flex'
+
             };
         this.board;
         this.boardStyle = [];
@@ -52,20 +52,10 @@ export class Game extends Component {
             property.style = style;
             row.push(property);
             if ((i + 1) % 2 == 0) { //row end
-
                 this.boardStyle.push(row);
                 row = [];
             }
         });
-        // this.board = squareProperties.map((property, i) =>
-        //     // Correct! Key should be specified inside the array.
-
-        //     <Square key={i.toString()}
-        //         style={property.style}
-        //         properties={this.properties} />
-        // );
-
-
     }
 
     componentDidMount() {
@@ -78,56 +68,63 @@ export class Game extends Component {
 
     }
     render() {
-        //[[],[]], [[], []]
+        //[[style ],[style ]], [[], []] structure of this.boardStyle
         //repeat 2 squares
-
-        const squares = this.boardStyle[0].map((square, i) =>
-            <Square style={square.style} />
+        //repeat 2 rows
+        const rows = this.boardStyle.map((row, i) =>
+            <SquareRow key={i.toString()} style={row} />
         );
 
-
-        //repeat 2 rows
         return (
-
-
             <div className={'container'} style={this.center}>
-                <div className={'row'}>
-                    {this.boardStyle[0].map((square, i) =>
-                        <Square key={i.toString()} style={square.style} />)
-                    }
-                </div>
-                <div className={'row'}>
-                   
-                        {this.boardStyle[1].map((square, i) =>
-                            <Square key={i.toString()} style={square.style} />)
-                        }
-                    
-                </div>
+                {rows}
+                {/* <SquareRow style={this.boardStyle[0]} /> */}
             </div>
-            // <div>
-            //     <div className={'container'} style={this.center}>
-            //         <div className={'row'}>
-            //             <div className={'col text-center'} style={this.style}>
-            //                 <Square /><Square />
-            //             </div>
-            //         </div>
-            //         <div className={'row'}>
-            //             <div className={'col text-center'} style={this.style}>
-            //                 <Square /><Square />
-            //             </div>
-            //         </div>
-            //     </div>
-            // </div>
+
         );
     }
 }
 
-class Testing {
+class SquareRow extends Component {
     constructor(props) {
+        super(props);
         this.props = props;
+        this.style = props.style;
+        console.log(props);
     }
     render() {
 
-        return (<div>Worked</div>);
+        const squares = this.style.map((square, i) =>
+            <div style={style}>
+                <Square key={i.toString()} style={square.style} />
+            </div>
+        );
+        const style = {
+            display: 'flex',
+            flexDirection: 'row'
+        };
+
+        return (
+            <div>
+                {squares}
+            </div>
+        );
     }
 }
+
+//Hard code version of what maps create
+        // <div className={'container'} style={this.center}>
+
+            //     <div className={'row'}>
+            //         {this.boardStyle[0].map((square, i) =>
+            //             <Square key={i.toString()} style={square.style} />)
+            //         }
+            //     </div>
+            //     <div className={'row'}>
+
+            //             {this.boardStyle[1].map((square, i) =>
+            //                 <Square key={i.toString()} style={square.style} />)
+            //             }
+
+            //     </div>
+            // </div>
