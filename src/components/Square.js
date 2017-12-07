@@ -5,30 +5,39 @@ export class Square extends Component {
     constructor(props) {
         super(props);
         this.style = props.style;
-
+        this.handleClick = this.handleClick.bind(this);
+        this.color = props.color;
+    
+        
         // {
         //     width: 50,
         //     height: 50,
         //     backgroundColor: 'blue',
         //     position: 'fixed'
         // };
-
     }
     componentDidMount() {
 
     }
-    componentDidUpdate() {
+    componentWillUnmount() {
 
     }
+    handleClick() {
+        this.props.handleClick(this.color);
+    }
+  
     render() {
         return (
-            <div style={this.style}>
-                            </div>
-                            );
+            <div style={this.style}
+            onClick={ this.handleClick }>
+            </div>
+        );
     }
 }
 
-function rect(props) {
-    const {ctx, x, y, width, height } = props;
-    ctx.fillRect(x, y, width, height);
+export function changeColor() {
+    
+        console.log('working');
+        
+    
 }

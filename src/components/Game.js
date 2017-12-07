@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { Square } from './Square';
+import { changeColor } from './Square';
 
 // bootstrap
 import { Button } from 'react-bootstrap';
@@ -16,6 +17,7 @@ import { Col } from 'react-bootstrap';
 export class Game extends Component {
     constructor(props) {
         super(props);
+        this.handleClick = this.handleClick.bind(this);
         this.style = {
             position: 'relative',
             backgroundColor: 'gray',
@@ -29,8 +31,8 @@ export class Game extends Component {
         }
         this.squareStyle =
             {
-                width: 50,
-                height: 50,
+                width: 100,
+                height: 100,
                 backgroundColor: 'blue',
 
             };
@@ -42,7 +44,9 @@ export class Game extends Component {
 
     createBoard() {
         const boardArr = [0, 1, 2, 3];
-        const colors = ['red', 'blue', 'yellow', 'green'];
+        const colorMap = ['red', 'blue', 'yellow', 'green'];
+        const colors = ['rgb(244, 65, 65)', 'rgb(66, 134, 244)', 'rgb(244, 232, 65)', 'rgb(66, 244, 78)'];
+
         let row = [];
 
         boardArr.forEach((num, i) => {
@@ -50,6 +54,8 @@ export class Game extends Component {
             let style = Object.assign({}, this.squareStyle);
             style.backgroundColor = colors[i];
             property.style = style;
+            property.color = colorMap[i];
+            
             row.push(property);
             if ((i + 1) % 2 == 0) { //row end
                 this.boardStyle.push(row);
@@ -57,22 +63,27 @@ export class Game extends Component {
             }
         });
     }
-
+    handleClick(color) {
+        console.log(color);
+        
+    }
     componentDidMount() {
         //this.createBoard();
     }
-    componentDidUpdate() {
-        this.updateCanvas();
+    componentWillUnmount() {
+        //this.updateCanvas();
     }
-    updateCanvas() {
 
-    }
     render() {
         //[[style ],[style ]], [[], []] structure of this.boardStyle
         //repeat 2 squares
         //repeat 2 rows
+    
         const rows = this.boardStyle.map((row, i) =>
-            <SquareRow key={i.toString()} style={row} />
+            <SquareRow key={i.toString()}
+                row={row}
+                handleClick={this.handleClick} 
+                />
         );
 
         return (
@@ -89,20 +100,30 @@ class SquareRow extends Component {
     constructor(props) {
         super(props);
         this.props = props;
-        this.style = props.style;
-        console.log(props);
+        this.row = props.row;
+        this.handleClick = this.handleClick.bind(this);
+      
     }
-    render() {
 
-        const squares = this.style.map((square, i) =>
-            <div style={style}>
-                <Square key={i.toString()} style={square.style} />
-            </div>
-        );
+    handleClick(color) {
+        this.props.handleClick(color);
+    }
+
+    render() {
         const style = {
             display: 'flex',
             flexDirection: 'row'
         };
+
+        const squares = this.row.map((square, i) =>
+            <div key={i.toString()} style={style}>
+                <Square key={i.toString()}
+                    style={square.style} 
+                    color={square.color}
+                    handleClick={ this.handleClick } />
+            </div>
+        );
+   
 
         return (
             <div>
