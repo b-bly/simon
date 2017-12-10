@@ -6,6 +6,8 @@ export class Square extends Component {
         super(props);
         this.color = this.props.color;
         this.handleClick = this.handleClick.bind(this);
+        this.handleMouseUp = this.handleMouseUp.bind(this);
+        
     }
 
     handleClick() {
@@ -13,12 +15,16 @@ export class Square extends Component {
         
         this.props.handleClick(this.color);
     }
+    handleMouseUp () {
+        this.props.handleMouseUp(this.color);
+    }
   
     render() {
     
         return (
             <div style={this.props.style}
-            onClick={ this.handleClick }>
+            onClick={ this.handleClick }
+            onMouseUp={ () => {this.handleMouseUp} }>
             </div>
         );
     }
