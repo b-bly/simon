@@ -23,8 +23,8 @@ export class Square extends Component {
     
         return (
             <div style={this.props.style}
-            onClick={ this.handleClick }
-            onMouseUp={ () => {this.handleMouseUp} }>
+            onMouseDown={ this.handleClick }
+            onMouseUp={ this.handleMouseUp }>
             </div>
         );
     }
