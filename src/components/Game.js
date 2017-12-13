@@ -145,13 +145,12 @@ export class Game extends Component {
             const color = colorMap[random];
             sequence.push(color);
         }
-        console.log('generateSequence, sequence: ');
-        console.log(sequence);
-
-        sequenceLength++;
+        //wait until player completes correct sequence to update sequenceLength
+        //or when it is displayed to the user it is one longer than the current sequence
+        //sequenceLength++;
         this.setState({
             sequence: sequence,
-            sequenceLength: sequenceLength
+
         }, this.playSequence(sequence));
     }
     playSequence(sequence) {
@@ -187,22 +186,37 @@ export class Game extends Component {
             this.setState({
                 sequenceIndex: sequenceIndex
             })
+            //won current round
             if (sequenceIndex === sequenceLength) {
                 console.log('end of sequence');
-                this.reset(message);
+                this.reset(message, true);
             }
         } else {
             console.log('Game over');
             message = 'Game over';
-            this.reset(message);
+            this.reset(message, false);
         }
     }
-    reset(message) {
-        this.setState({
-            sequenceIndex: 0,
-            showStart: true,
-            message: message
-        });
+    reset(message, won) {
+        if (won === true) {
+            console.log('reset, won = true');
+            const sequenceLength = this.state.sequenceLength + 1;
+            this.setState({
+                sequenceIndex: 0,
+                showStart: true,
+                message: message,
+                sequenceLength: sequenceLength
+            });
+        } else {
+            console.log('reset, won = false');
+            
+            this.setState({
+                sequenceIndex: 0,
+                showStart: true,
+                message: message,
+                sequenceLength: 1
+            });
+        }
     }
     componentWillMount() {
         const state = this.createBoard();
@@ -233,6 +247,7 @@ export class Game extends Component {
         );
 
         const button = this.state.showStart === true ? <StartButton start={this.start} /> : <div></div>;
+        const sequenceLength = this.state.sequenceLength;
         return (
             <div>
                 <div className={'container'} style={this.center}>
@@ -243,10 +258,12 @@ export class Game extends Component {
                 </div>
                 <div style={this.center}>
                     {button}
-                    
+
                 </div>
-                <Message message={this.state.message} 
-                style={this.center}/>
+                <Message message={this.state.message}
+                    style={this.center} />
+                <Info style={this.center}
+                    sequenceLength={sequenceLength} />
             </div>
         );
     }
@@ -281,7 +298,25 @@ class StartButton extends Component {
         return (
             <Button bsStyle="primary"
                 onClick={() => { this.start() }}
-            >Start</Button>);
+            >Start</Button>
+        );
+    }
+}
+
+class Info extends Component {
+    constructor(props) {
+        super(props);
+        this.props = props;
+
+    }
+    render() {
+        return (
+            <div style={this.props.style}>
+                Sequence length: {this.props.sequenceLength}
+
+
+            </div>
+        );
     }
 }
 
