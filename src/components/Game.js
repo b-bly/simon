@@ -3,7 +3,7 @@ import { Square } from './Square';
 import { changeColor } from './Square';
 
 // bootstrap
-import { Button } from 'react-bootstrap';
+import { Button, ListGroup } from 'react-bootstrap';
 import { Grid } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
@@ -26,6 +26,7 @@ export class Game extends Component {
         this.handleClick = this.handleClick.bind(this);
         this.start = this.start.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
+        this.generateSequence = this.generateSequence.bind(this);
 
         this.center = {
             display: 'flex',
@@ -41,7 +42,9 @@ export class Game extends Component {
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: [],
             sequence: [],
-            sequenceLength: 1
+            sequenceLength: 1,
+            showStart: true,
+            sequenceIndex: 0
         }
 
     }
@@ -76,18 +79,13 @@ export class Game extends Component {
     handleClick(color) {
         //state: {color: '', style: {backgroundColor: ''}}
         const stateCopy = this.createBoard();
-
         const boardStyle = stateCopy.boardStyle.map((row, i) => {
             const updatedRow = row.map((square, j) => {
-                console.log('handleClick, square: ');
-                console.log(square);
-
                 let squareCopy = Object.assign({}, square);
                 if (square.color == color) {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
                     squareCopy.style.backgroundColor = litColors[i * 2 + j]; //change 2d array index to 1D array index                   
-
                 }
                 return squareCopy;
             });
@@ -106,8 +104,6 @@ export class Game extends Component {
         const stateCopy = this.createBoard();
         const boardStyle = stateCopy.boardStyle.map((row, i) => {
             const updatedRow = row.map((square, j) => {
-                console.log('handleClick, square: ');
-                console.log(square);
                 let squareCopy = Object.assign({}, square);
                 if (square.color == color) {
                     //got error when assigning directly to square.style.backgroundColor
@@ -132,7 +128,10 @@ export class Game extends Component {
 
     start() {
         console.log('start called');
-        this.generateSequence();
+        this.generateSequence(); //calls playSequence() as callback
+        this.setState({
+            showStart: false
+        })
 
     }
     generateSequence() {
@@ -144,14 +143,18 @@ export class Game extends Component {
             const color = colorMap[random];
             sequence.push(color);
         }
-        sequenceLength ++;
+        console.log('generateSequence, sequence: ');
+        console.log(sequence);
+
+        sequenceLength++;
         this.setState({
             sequence: sequence,
             sequenceLength: sequenceLength
-        }, this.playSequence());
+        }, this.playSequence(sequence));
     }
-    playSequence () {
-        const sequence = this.state.sequence;
+    playSequence(sequence) {
+        //const sequence = this.state.sequence;
+      
         sequence.forEach((color, i) => {
             setTimeout(() => {
                 this.changeColor(color, true);
@@ -163,9 +166,35 @@ export class Game extends Component {
     }
 
     handleMouseUp(color) {
-        console.log('mouseUp color: ');
-        console.log(color);
+       
         this.changeColor(color, false);
+        //checkSelection
+        this.checkSelection(color);
+    }
+    checkSelection(color) {
+        //check if correct color was clicked on mouseUp
+        //if it's the last color in the sequence, play a new sequence
+        // if wrong, game over message, show start
+        let sequenceIndex = this.state.sequenceIndex;
+        const correctColor = this.state.sequence[sequenceIndex];
+        const sequenceLength = this.state.sequence.length;
+        if (color == correctColor) {
+            sequenceIndex++;
+            console.log('correct selection ');    
+            this.setState({
+                sequenceIndex: sequenceIndex
+            })       
+        } else {
+            console.log('Game over');
+        }
+        if (sequenceIndex == sequenceLength) {
+            console.log('end of sequence');
+            
+            this.setState({
+                sequenceIndex: 0,
+                showStart: true
+            })
+        }
     }
     componentWillMount() {
         const state = this.createBoard();
@@ -197,10 +226,8 @@ export class Game extends Component {
                 handleClick={this.handleClick}
                 handleMouseUp={this.handleMouseUp} />
         );
-        console.log('game render, state: ');
-        console.log(this.state.boardStyle[0][0].style);
-        const button = <Button bsStyle="primary"
-        >Primary</Button>;
+     
+        const button = this.state.showStart == true ? <StartButton start={this.start} /> : <div></div>;
 
         return (
             <div>
@@ -211,7 +238,7 @@ export class Game extends Component {
                     </div>
                 </div>
                 <div style={this.center}>
-                    <StartButton start={this.start} />
+                    {button}
                 </div>
             </div>
         );
