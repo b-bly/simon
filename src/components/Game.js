@@ -188,12 +188,11 @@ export class Game extends Component {
             console.log('Game over');
         }
         if (sequenceIndex == sequenceLength) {
-            console.log('end of sequence');
-            
+            console.log('end of sequence');           
             this.setState({
                 sequenceIndex: 0,
                 showStart: true
-            })
+            });
         }
     }
     componentWillMount() {

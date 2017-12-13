@@ -11,10 +11,16 @@ import { Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
 
 class App extends Component {
+
+
   render() {
+    const center = {
+      display: 'flex',
+      justifyContent: 'center'
+    }
     return (
       <div className="App">
-        <h1>Simon</h1>
+        <h1 style={center}>Simon</h1>
         <Game />
       </div>
     );
