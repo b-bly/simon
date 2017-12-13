@@ -18,6 +18,7 @@ const colorMap = ['red', 'blue', 'yellow', 'green'];
 const colors = ['rgb(244, 65, 65)', 'rgb(66, 134, 244)', 'rgb(244, 232, 65)', 'rgb(66, 244, 78)'];
 const litColors = ['rgb(255, 153, 153)', 'rgb(160, 196, 255)', 'rgb(252, 246, 161)', 'rgb(153, 255, 159)'];
 const INTERVAL = 1000;
+const INTERVAL_SPACING = 100;
 
 export class Game extends Component {
     constructor(props) {
@@ -129,13 +130,16 @@ export class Game extends Component {
 
     start() {
         console.log('start called');
-        const sequence = ['red'];       
-        setTimeout(() => {
-            this.changeColor('red', true);
-        }, 0);
-        setTimeout(() => {
-            this.changeColor('red', false);
-        }, INTERVAL);
+        const sequence = ['red', 'blue'];
+        sequence.forEach((color, i) => {
+            setTimeout(() => {
+                this.changeColor(color, true);
+            }, INTERVAL * i + INTERVAL_SPACING * i);
+            setTimeout(() => {
+                this.changeColor(color, false);
+            }, INTERVAL * i + INTERVAL );
+        });
+
     }
 
     handleMouseUp(color) {
@@ -163,8 +167,8 @@ export class Game extends Component {
             <Square key={i.toString()}
                 style={square.style}
                 color={square.color}
-                handleClick={this.handleClick} 
-                handleMouseUp={this.handleMouseUp }/>
+                handleClick={this.handleClick}
+                handleMouseUp={this.handleMouseUp} />
         );
         const row2 = this.state.boardStyle[1].map((square, i) =>
             <Square key={i.toString()}
