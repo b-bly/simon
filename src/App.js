@@ -5,10 +5,10 @@ import { Game } from './components/Game';
 
 
 // bootstrap
-import { Button } from 'react-bootstrap';
-import { Grid } from 'react-bootstrap';
-import { Row } from 'react-bootstrap';
-import { Col } from 'react-bootstrap';
+// import { Button } from 'react-bootstrap';
+// import { Grid } from 'react-bootstrap';
+// import { Row } from 'react-bootstrap';
+// import { Col } from 'react-bootstrap';
 
 class App extends Component {
 

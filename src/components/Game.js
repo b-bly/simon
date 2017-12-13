@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Square } from './Square';
-import { changeColor } from './Square';
 
 // bootstrap
 import { Button, ListGroup } from 'react-bootstrap';
-import { Grid } from 'react-bootstrap';
-import { Row } from 'react-bootstrap';
-import { Col } from 'react-bootstrap';
+// import { Grid } from 'react-bootstrap';
+// import { Row } from 'react-bootstrap';
+// import { Col } from 'react-bootstrap';
 // const Grid = ReactBootstrap.Grid;
 // const Row = ReactBootstrap.Row;
 // const Col = ReactBootstrap.Col;
@@ -37,6 +36,8 @@ export class Game extends Component {
                 width: 100,
                 height: 100,
                 backgroundColor: 'blue',
+                borderRadius: 10,
+                margin: 4
             };
         this.state = {
             lit: { red: false, blue: false, yellow: false, green: false },
@@ -44,12 +45,13 @@ export class Game extends Component {
             sequence: [],
             sequenceLength: 1,
             showStart: true,
-            sequenceIndex: 0
+            sequenceIndex: 0,
+            message: ''
         }
 
     }
 
-    createBoard() {//board obj = {style, color, lit(boolean)}
+    createBoard() { //board obj = {style, color, lit(boolean)}
         let row = [];
         const boardStyle = [];
         boardArr.forEach((num, i) => {
@@ -59,7 +61,7 @@ export class Game extends Component {
             style.backgroundColor = colors[i];
             property.style = style;
             row.push(property);
-            if ((i + 1) % 2 == 0) { //row end
+            if ((i + 1) % 2 === 0) { //row end
                 boardStyle.push(row);
                 row = [];
             }
@@ -69,7 +71,6 @@ export class Game extends Component {
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: boardStyle
         };
-        console.log('createBoard called');
     }
 
     updateBoard(state) {
@@ -82,7 +83,7 @@ export class Game extends Component {
         const boardStyle = stateCopy.boardStyle.map((row, i) => {
             const updatedRow = row.map((square, j) => {
                 let squareCopy = Object.assign({}, square);
-                if (square.color == color) {
+                if (square.color === color) {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
                     squareCopy.style.backgroundColor = litColors[i * 2 + j]; //change 2d array index to 1D array index                   
@@ -105,10 +106,10 @@ export class Game extends Component {
         const boardStyle = stateCopy.boardStyle.map((row, i) => {
             const updatedRow = row.map((square, j) => {
                 let squareCopy = Object.assign({}, square);
-                if (square.color == color) {
+                if (square.color === color) {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
-                    if (lit == true) { //change to lit color
+                    if (lit === true) { //change to lit color
                         squareCopy.style.backgroundColor = litColors[i * 2 + j]; //change 2d array index to 1D array index                    
                     } else {
                         squareCopy.style.backgroundColor = colors[i * 2 + j]; //change 2d array index to 1D array index                    
@@ -130,8 +131,9 @@ export class Game extends Component {
         console.log('start called');
         this.generateSequence(); //calls playSequence() as callback
         this.setState({
-            showStart: false
-        })
+            showStart: false,
+            message: ''
+        });
 
     }
     generateSequence() {
@@ -154,7 +156,7 @@ export class Game extends Component {
     }
     playSequence(sequence) {
         //const sequence = this.state.sequence;
-      
+
         sequence.forEach((color, i) => {
             setTimeout(() => {
                 this.changeColor(color, true);
@@ -166,7 +168,7 @@ export class Game extends Component {
     }
 
     handleMouseUp(color) {
-       
+
         this.changeColor(color, false);
         //checkSelection
         this.checkSelection(color);
@@ -178,29 +180,33 @@ export class Game extends Component {
         let sequenceIndex = this.state.sequenceIndex;
         const correctColor = this.state.sequence[sequenceIndex];
         const sequenceLength = this.state.sequence.length;
-        if (color == correctColor) {
+        let message = '';
+        if (color === correctColor) {
             sequenceIndex++;
-            console.log('correct selection ');    
+            console.log('correct selection ');
             this.setState({
                 sequenceIndex: sequenceIndex
-            })       
+            })
+            if (sequenceIndex === sequenceLength) {
+                console.log('end of sequence');
+                this.reset(message);
+            }
         } else {
             console.log('Game over');
+            message = 'Game over';
+            this.reset(message);
         }
-        if (sequenceIndex == sequenceLength) {
-            console.log('end of sequence');           
-            this.setState({
-                sequenceIndex: 0,
-                showStart: true
-            });
-        }
+    }
+    reset(message) {
+        this.setState({
+            sequenceIndex: 0,
+            showStart: true,
+            message: message
+        });
     }
     componentWillMount() {
         const state = this.createBoard();
         this.updateBoard(state);
-    }
-    componentWillUnmount() {
-        //this.updateCanvas();
     }
 
     render() {
@@ -225,9 +231,8 @@ export class Game extends Component {
                 handleClick={this.handleClick}
                 handleMouseUp={this.handleMouseUp} />
         );
-     
-        const button = this.state.showStart == true ? <StartButton start={this.start} /> : <div></div>;
 
+        const button = this.state.showStart === true ? <StartButton start={this.start} /> : <div></div>;
         return (
             <div>
                 <div className={'container'} style={this.center}>
@@ -238,9 +243,28 @@ export class Game extends Component {
                 </div>
                 <div style={this.center}>
                     {button}
+                    
                 </div>
+                <Message message={this.state.message} 
+                style={this.center}/>
             </div>
         );
+    }
+}
+
+class Message extends Component {
+    constructor(props) {
+        super(props);
+        this.props = props;
+        this.style = {};
+    }
+    render() {
+        this.style = Object.assign({}, this.props.style);
+        this.style.fontSize = '30px';
+        return (
+            <div style={this.style}> {this.props.message}
+            </div>
+        )
     }
 }
 
