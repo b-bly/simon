@@ -39,7 +39,9 @@ export class Game extends Component {
             };
         this.state = {
             lit: { red: false, blue: false, yellow: false, green: false },
-            boardStyle: []
+            boardStyle: [],
+            sequence: [],
+            sequenceLength: 1
         }
 
     }
@@ -130,16 +132,34 @@ export class Game extends Component {
 
     start() {
         console.log('start called');
-        const sequence = ['red', 'blue'];
+        this.generateSequence();
+
+    }
+    generateSequence() {
+        //random sequence of colors
+        let sequenceLength = this.state.sequenceLength;
+        const sequence = [];
+        for (let i = 0; i < sequenceLength; i++) {
+            const random = Math.floor(Math.random() * 4); //random color
+            const color = colorMap[random];
+            sequence.push(color);
+        }
+        sequenceLength ++;
+        this.setState({
+            sequence: sequence,
+            sequenceLength: sequenceLength
+        }, this.playSequence());
+    }
+    playSequence () {
+        const sequence = this.state.sequence;
         sequence.forEach((color, i) => {
             setTimeout(() => {
                 this.changeColor(color, true);
             }, INTERVAL * i + INTERVAL_SPACING * i);
             setTimeout(() => {
                 this.changeColor(color, false);
-            }, INTERVAL * i + INTERVAL );
+            }, INTERVAL * i + INTERVAL);
         });
-
     }
 
     handleMouseUp(color) {
