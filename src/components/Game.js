@@ -209,7 +209,7 @@ export class Game extends Component {
             });
         } else {
             console.log('reset, won = false');
-            
+
             this.setState({
                 sequenceIndex: 0,
                 showStart: true,
@@ -256,14 +256,15 @@ export class Game extends Component {
                         {row2}
                     </div>
                 </div>
+                <Info style={this.center}
+                    sequenceLength={sequenceLength} />
                 <div style={this.center}>
                     {button}
 
                 </div>
                 <Message message={this.state.message}
                     style={this.center} />
-                <Info style={this.center}
-                    sequenceLength={sequenceLength} />
+                
             </div>
         );
     }
@@ -293,10 +294,15 @@ class StartButton extends Component {
     }
     start() {
         this.props.start();
+        
     }
     render() {
+        const style = {
+            margin: '5px',
+        };
         return (
             <Button bsStyle="primary"
+                style={style}
                 onClick={() => { this.start() }}
             >Start</Button>
         );
@@ -307,14 +313,23 @@ class Info extends Component {
     constructor(props) {
         super(props);
         this.props = props;
-
+        this.style = Object.assign({}, this.props.style);
+        this.style.margin = '5px';
+        this.childStyle = {
+            border: '3px solid',
+            width: '200px',
+            padding: '5px',
+        }
+   
+        this.style.justifyContent = 'center';
     }
     render() {
         return (
-            <div style={this.props.style}>
-                Sequence length: {this.props.sequenceLength}
-
-
+            <div style={this.style}>
+           
+                <div style={this.childStyle}>
+                    Sequence length: {this.props.sequenceLength}
+                </div>
             </div>
         );
     }
