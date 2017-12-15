@@ -15,7 +15,7 @@ import swal from 'sweetalert2';
 // https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753
 const boardArr = [0, 1, 2, 3];
 const colorMap = ['red', 'blue', 'yellow', 'green'];
-const colors = ['rgb(244, 65, 65)', 'rgb(66, 134, 244)', 'rgb(244, 232, 65)', 'rgb(66, 244, 78)'];
+const colors = ['rgb(255, 33, 0)', 'rgb(0, 97, 255)', 'rgb(255, 238, 0)', 'rgb(0, 255, 17)'];
 const litColors = ['rgb(255, 153, 153)', 'rgb(160, 196, 255)', 'rgb(252, 246, 161)', 'rgb(153, 255, 159)'];
 const INTERVAL = 1000;
 const INTERVAL_SPACING = 100;
@@ -48,7 +48,8 @@ export class Game extends Component {
             sequenceLength: 1,
             showStart: true,
             sequenceIndex: 0,
-            message: 'Click start'
+            message: 'Click start',
+            startText: 'Start'
         }
 
     }
@@ -123,7 +124,7 @@ export class Game extends Component {
         });
         console.log('changeColor, boardStyle: ');
         console.log(boardStyle);
-        
+
         this.setState({
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: boardStyle
@@ -139,7 +140,7 @@ export class Game extends Component {
     }
     generateSequence() {
         console.log('generateSequence called');
-        
+
         //random sequence of colors
         let sequenceLength = this.state.sequenceLength;
         const sequence = [];
@@ -162,7 +163,7 @@ export class Game extends Component {
         console.log('playSequence called');
         console.log('sequence: ');
         console.log(sequence);
-        
+
         //const sequence = this.state.sequence;
 
         sequence.forEach((color, i) => {
@@ -200,12 +201,13 @@ export class Game extends Component {
                 console.log('end of sequence');
                 message = 'Click start';
                 this.reset(message, true);
-                swal('Nice');
+
             }
         } else { //GAME OVER
             console.log('Game over');
             message = 'Game over';
-            this.squareStyle.display = 'none'; //remember to change this back to visible
+
+            // this.squareStyle.display = 'none'; //remember to change this back to visible
             this.reset(message, false);
         }
     }
@@ -213,12 +215,29 @@ export class Game extends Component {
         if (won === true) {
             console.log('reset, won = true');
             const sequenceLength = this.state.sequenceLength + 1;
-            this.setState({
-                sequenceIndex: 0,
-                showStart: true,
-                message: message,
-                sequenceLength: sequenceLength
+            
+            swal({
+                title: 'Nice!',
+                type: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Play next level',
+                showCancelButton: true,
+
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Not now'
+            }).then((result) => {
+                if (result.value === true) {
+                    this.start();
+                }
             });
+            
+            this.setState({
+                    sequenceIndex: 0,
+                    showStart: true,
+                    message: message,
+                    sequenceLength: sequenceLength,
+                    startText: 'play'
+                });
         } else {
             console.log('reset, won = false');
 
@@ -228,6 +247,18 @@ export class Game extends Component {
                 message: message,
                 sequenceLength: 1
             });
+            swal({
+                title: 'Game over',
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'New game'
+
+            }).then((result) => {
+                if (result.value = true) {
+                    this.start();
+                }
+            }
+                );
         }
     }
     componentWillMount() {
@@ -250,7 +281,7 @@ export class Game extends Component {
             display: 'flex',
             width: 220,
             height: 216,
-           
+
         };
         const messageStyle = {
             textAlign: 'center',
@@ -275,22 +306,23 @@ export class Game extends Component {
                 handleMouseUp={this.handleMouseUp} />
         );
 
-        const button = this.state.showStart === true ? <StartButton start={this.start} /> : <div></div>;
+        const button = this.state.showStart === true ? <StartButton startText={this.state.startText} start={this.start} /> : <div></div>;
+        
         const sequenceLength = this.state.sequenceLength;
         return (
             <div>
                 <div className={'container'} style={this.center}>
-                    {this.state.showStart ? (
-                        <div style={messageContainerStyle}>
+
+                    {/* <div style={messageContainerStyle}>
                         <Message message={this.state.message}
                             style={messageStyle} />
-                            </div>
-                    )
-                        : (<div style={rowStyle}>
-                            {row1}
-                            {row2}
-                        </div>)
-                    }
+                    </div> */}
+
+                    <div style={rowStyle}>
+                        {row1}
+                        {row2}
+                    </div>
+
                 </div>
                 <Info style={this.center}
                     sequenceLength={sequenceLength} />
@@ -338,7 +370,7 @@ class StartButton extends Component {
             <Button bsStyle="primary"
                 style={style}
                 onClick={() => { this.start() }}
-            >Start</Button>
+            >{this.props.startText}</Button>
         );
     }
 }
