@@ -9,6 +9,7 @@ import { Button, ListGroup } from 'react-bootstrap';
 // const Grid = ReactBootstrap.Grid;
 // const Row = ReactBootstrap.Row;
 // const Col = ReactBootstrap.Col;
+import swal from 'sweetalert2';
 
 // This was helpful: 
 // https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753
@@ -37,7 +38,8 @@ export class Game extends Component {
                 height: 100,
                 backgroundColor: 'blue',
                 borderRadius: 10,
-                margin: 4
+                margin: 4,
+                display: 'flex'
             };
         this.state = {
             lit: { red: false, blue: false, yellow: false, green: false },
@@ -46,7 +48,7 @@ export class Game extends Component {
             sequenceLength: 1,
             showStart: true,
             sequenceIndex: 0,
-            message: ''
+            message: 'Click start'
         }
 
     }
@@ -119,6 +121,9 @@ export class Game extends Component {
             });
             return updatedRow;
         });
+        console.log('changeColor, boardStyle: ');
+        console.log(boardStyle);
+        
         this.setState({
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: boardStyle
@@ -130,13 +135,11 @@ export class Game extends Component {
     start() {
         console.log('start called');
         this.generateSequence(); //calls playSequence() as callback
-        this.setState({
-            showStart: false,
-            message: ''
-        });
-
+        this.squareStyle.display = 'flex';
     }
     generateSequence() {
+        console.log('generateSequence called');
+        
         //random sequence of colors
         let sequenceLength = this.state.sequenceLength;
         const sequence = [];
@@ -150,10 +153,16 @@ export class Game extends Component {
         //sequenceLength++;
         this.setState({
             sequence: sequence,
+            showStart: false,
+            message: ''
 
         }, this.playSequence(sequence));
     }
     playSequence(sequence) {
+        console.log('playSequence called');
+        console.log('sequence: ');
+        console.log(sequence);
+        
         //const sequence = this.state.sequence;
 
         sequence.forEach((color, i) => {
@@ -189,11 +198,14 @@ export class Game extends Component {
             //won current round
             if (sequenceIndex === sequenceLength) {
                 console.log('end of sequence');
+                message = 'Click start';
                 this.reset(message, true);
+                swal('Nice');
             }
-        } else {
+        } else { //GAME OVER
             console.log('Game over');
             message = 'Game over';
+            this.squareStyle.display = 'none'; //remember to change this back to visible
             this.reset(message, false);
         }
     }
@@ -228,7 +240,24 @@ export class Game extends Component {
             display: 'flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
-            width: 220
+            width: 220,
+            height: 216,
+
+        };
+
+        const messageContainerStyle = {
+            margin: 'auto',
+            display: 'flex',
+            width: 220,
+            height: 216,
+           
+        };
+        const messageStyle = {
+            textAlign: 'center',
+            margin: 'auto',
+            border: '3px solid red',
+            borderRadius: '4px',
+            padding: '4px'
         };
 
         const row1 = this.state.boardStyle[0].map((square, i) =>
@@ -251,20 +280,25 @@ export class Game extends Component {
         return (
             <div>
                 <div className={'container'} style={this.center}>
-                    <div style={rowStyle}>
-                        {row1}
-                        {row2}
-                    </div>
+                    {this.state.showStart ? (
+                        <div style={messageContainerStyle}>
+                        <Message message={this.state.message}
+                            style={messageStyle} />
+                            </div>
+                    )
+                        : (<div style={rowStyle}>
+                            {row1}
+                            {row2}
+                        </div>)
+                    }
                 </div>
                 <Info style={this.center}
                     sequenceLength={sequenceLength} />
                 <div style={this.center}>
                     {button}
-
                 </div>
-                <Message message={this.state.message}
-                    style={this.center} />
-                
+
+
             </div>
         );
     }
@@ -294,7 +328,7 @@ class StartButton extends Component {
     }
     start() {
         this.props.start();
-        
+
     }
     render() {
         const style = {
@@ -320,13 +354,13 @@ class Info extends Component {
             width: '200px',
             padding: '5px',
         }
-   
+
         this.style.justifyContent = 'center';
     }
     render() {
         return (
             <div style={this.style}>
-           
+
                 <div style={this.childStyle}>
                     Sequence length: {this.props.sequenceLength}
                 </div>
