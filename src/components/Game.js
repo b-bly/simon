@@ -23,10 +23,12 @@ const INTERVAL_SPACING = 100;
 export class Game extends Component {
     constructor(props) {
         super(props);
+        //bind this is needed for functions being called from child components
         this.handleClick = this.handleClick.bind(this);
         this.start = this.start.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
         this.generateSequence = this.generateSequence.bind(this);
+        this.reset = this.reset.bind(this);
 
         this.center = {
             display: 'flex',
@@ -215,7 +217,7 @@ export class Game extends Component {
         if (won === true) {
             console.log('reset, won = true');
             const sequenceLength = this.state.sequenceLength + 1;
-            
+
             swal({
                 title: 'Nice!',
                 type: 'success',
@@ -230,14 +232,14 @@ export class Game extends Component {
                     this.start();
                 }
             });
-            
+
             this.setState({
-                    sequenceIndex: 0,
-                    showStart: true,
-                    message: message,
-                    sequenceLength: sequenceLength,
-                    startText: 'play'
-                });
+                sequenceIndex: 0,
+                showStart: true,
+                message: message,
+                sequenceLength: sequenceLength,
+                startText: 'play'
+            });
         } else {
             console.log('reset, won = false');
 
@@ -251,10 +253,13 @@ export class Game extends Component {
                 title: 'Game over',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'New game'
+                confirmButtonText: 'New game',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Not now'
 
             }).then((result) => {
-                if (result.value = true) {
+                if (result.value === true) {
                     this.start();
                 }
             }
@@ -291,6 +296,7 @@ export class Game extends Component {
             padding: '4px'
         };
 
+
         const row1 = this.state.boardStyle[0].map((square, i) =>
             <Square key={i.toString()}
                 style={square.style}
@@ -305,9 +311,13 @@ export class Game extends Component {
                 handleClick={this.handleClick}
                 handleMouseUp={this.handleMouseUp} />
         );
-
-        const button = this.state.showStart === true ? <StartButton startText={this.state.startText} start={this.start} /> : <div></div>;
-        
+        const startStyle = {
+            margin: '5px',
+            width: '65px'
+        };
+        if (this.state.showStart === false) startStyle.visibility = 'hidden';
+        const button = <StartButton startText={this.state.startText} start={this.start} style={startStyle} />;
+        const quitButton = <QuitButton reset={this.reset} />;
         const sequenceLength = this.state.sequenceLength;
         return (
             <div>
@@ -327,7 +337,7 @@ export class Game extends Component {
                 <Info style={this.center}
                     sequenceLength={sequenceLength} />
                 <div style={this.center}>
-                    {button}
+                    {button} {quitButton}
                 </div>
 
 
@@ -336,12 +346,37 @@ export class Game extends Component {
     }
 }
 
+class QuitButton extends Component {
+    constructor(props) {
+        super(props);
+        this.props = props;
+        this.reset = this.reset.bind(this);
+    }
+    reset(message, won) {
+        this.props.reset(message, won);
+    }
+    render() {
+        const style = {
+            margin: '5px',
+        };
+        return (
+            <div>
+                <Button bsStyle="warning"
+                    style={style}
+                    onClick={() => { this.reset('Game over', false) }}
+                >Quit
+                </Button>
+            </div>
+        );
+    }
+}
 class Message extends Component {
     constructor(props) {
         super(props);
         this.props = props;
         this.style = {};
     }
+
     render() {
         this.style = Object.assign({}, this.props.style);
         this.style.fontSize = '30px';
@@ -365,10 +400,13 @@ class StartButton extends Component {
     render() {
         const style = {
             margin: '5px',
+            width: '65px'
         };
+
         return (
-            <Button bsStyle="primary"
-                style={style}
+            <Button id={'start-button'}
+                bsStyle="primary"
+                style={this.props.style}
                 onClick={() => { this.start() }}
             >{this.props.startText}</Button>
         );
