@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import './styles/App.css';
 //components
 import { Game } from './components/Game';
 
@@ -19,7 +19,7 @@ class App extends Component {
       justifyContent: 'center'
     }
     return (
-      <div className="App">
+      <div className="App App-title">
         <h1 style={center}>Simon</h1>
         <Game />
       </div>

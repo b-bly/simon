@@ -1,22 +1,25 @@
+//to do
+//encase whole game in lightgray div
+//move css to css file
+//darken colors
+
 import React, { Component } from 'react';
 import { Square } from './Square';
 
 // bootstrap
 import { Button, ListGroup } from 'react-bootstrap';
-// import { Grid } from 'react-bootstrap';
-// import { Row } from 'react-bootstrap';
-// import { Col } from 'react-bootstrap';
-// const Grid = ReactBootstrap.Grid;
-// const Row = ReactBootstrap.Row;
-// const Col = ReactBootstrap.Col;
+
+//styles
+import '../styles/Game.css';
+//sweetalerts2
 import swal from 'sweetalert2';
 
 // This was helpful: 
 // https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753
 const boardArr = [0, 1, 2, 3];
 const colorMap = ['red', 'blue', 'yellow', 'green'];
-const colors = ['rgb(255, 33, 0)', 'rgb(0, 97, 255)', 'rgb(255, 238, 0)', 'rgb(0, 255, 17)'];
-const litColors = ['rgb(255, 153, 153)', 'rgb(160, 196, 255)', 'rgb(252, 246, 161)', 'rgb(153, 255, 159)'];
+
+
 const INTERVAL = 1000;
 const INTERVAL_SPACING = 100;
 
@@ -30,19 +33,7 @@ export class Game extends Component {
         this.generateSequence = this.generateSequence.bind(this);
         this.reset = this.reset.bind(this);
 
-        this.center = {
-            display: 'flex',
-            justifyContent: 'center'
-        }
-        this.squareStyle =
-            {
-                width: 100,
-                height: 100,
-                backgroundColor: 'blue',
-                borderRadius: 10,
-                margin: 4,
-                display: 'flex'
-            };
+  
         this.state = {
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: [],
@@ -61,10 +52,8 @@ export class Game extends Component {
         const boardStyle = [];
         boardArr.forEach((num, i) => {
             let property = {};
-            let style = Object.assign({}, this.squareStyle);
             property.color = colorMap[i];
-            style.backgroundColor = colors[i];
-            property.style = style;
+            property.className = 'square ' + colorMap[i];
             row.push(property);
             if ((i + 1) % 2 === 0) { //row end
                 boardStyle.push(row);
@@ -91,7 +80,7 @@ export class Game extends Component {
                 if (square.color === color) {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
-                    squareCopy.style.backgroundColor = litColors[i * 2 + j]; //change 2d array index to 1D array index                   
+                    squareCopy.className = 'square ' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                   
                 }
                 return squareCopy;
             });
@@ -115,9 +104,9 @@ export class Game extends Component {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
                     if (lit === true) { //change to lit color
-                        squareCopy.style.backgroundColor = litColors[i * 2 + j]; //change 2d array index to 1D array index                    
+                        squareCopy.className = 'square ' + 'light-' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
                     } else {
-                        squareCopy.style.backgroundColor = colors[i * 2 + j]; //change 2d array index to 1D array index                    
+                        squareCopy.className = 'square ' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
                     }
                 }
                 return squareCopy;
@@ -138,7 +127,7 @@ export class Game extends Component {
     start() {
         console.log('start called');
         this.generateSequence(); //calls playSequence() as callback
-        this.squareStyle.display = 'flex';
+        
     }
     generateSequence() {
         console.log('generateSequence called');
@@ -270,66 +259,44 @@ export class Game extends Component {
         const state = this.createBoard();
         this.updateBoard(state);
     }
+    startClass() {
+        if (this.state.showStart === true) {
+            return 'start';
+        } else {
+            return 'start hide-start';
+        }
+    }
 
     render() {
-        const rowStyle = {
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            width: 220,
-            height: 216,
-
-        };
-
-        const messageContainerStyle = {
-            margin: 'auto',
-            display: 'flex',
-            width: 220,
-            height: 216,
-
-        };
-        const messageStyle = {
-            textAlign: 'center',
-            margin: 'auto',
-            border: '3px solid red',
-            borderRadius: '4px',
-            padding: '4px'
-        };
 
         const board = this.state.boardStyle.map((row, j) => {
             return row.map((square, i) =>
                 <Square key={i.toString()}
-                    style={square.style}
+                    className={square.className}
                     color={square.color}
                     handleClick={this.handleClick}
                     handleMouseUp={this.handleMouseUp} />
             );
         });
-        const startStyle = {
-            margin: '5px',
-            width: '65px'
-        };
-        if (this.state.showStart === false) startStyle.visibility = 'hidden';
-        const button = <StartButton startText={this.state.startText} start={this.start} style={startStyle} />;
+      
+       console.log('state');
+       console.log(this.state);
+       
+        const button = <StartButton className={this.startClass()} startText={this.state.startText} start={this.start} />;
         const quitButton = <QuitButton reset={this.reset} />;
         const sequenceLength = this.state.sequenceLength;
         return (
             <div>
-                <div className={'container'} style={this.center}>
+                <div className={'container'} >
 
-                    {/* <div style={messageContainerStyle}>
-                        <Message message={this.state.message}
-                            style={messageStyle} />
-                    </div> */}
-
-                    <div style={rowStyle}>
-                        {board}
+                    <div className={'row'}>
+                       {board}
                     </div>
 
                 </div>
-                <Info style={this.center}
+                <Info className={'container'}
                     sequenceLength={sequenceLength} />
-                <div style={this.center}>
+                <div className={'container'}>
                     {button} {quitButton}
                 </div>
 
@@ -349,16 +316,13 @@ class QuitButton extends Component {
         this.props.reset(message, won);
     }
     render() {
-        const style = {
-            margin: '5px',
-        };
+  
         return (
             <div>
                 <Button bsStyle="warning"
-                    style={style}
+                    className={'quit-button'}
                     onClick={() => { this.reset('Game over', false) }}
-                >Quit
-                </Button>
+                >Quit</Button>
             </div>
         );
     }
@@ -391,15 +355,11 @@ class StartButton extends Component {
 
     }
     render() {
-        const style = {
-            margin: '5px',
-            width: '65px'
-        };
-
+    
         return (
             <Button id={'start-button'}
                 bsStyle="primary"
-                style={this.props.style}
+                className={this.props.className}
                 onClick={() => { this.start() }}
             >{this.props.startText}</Button>
         );
@@ -422,9 +382,8 @@ class Info extends Component {
     }
     render() {
         return (
-            <div style={this.style}>
-
-                <div style={this.childStyle}>
+            <div className={this.props.className}>
+                <div className={'info'}>
                     Sequence length: {this.props.sequenceLength}
                 </div>
             </div>

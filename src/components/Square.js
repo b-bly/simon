@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import '../styles/Game.css';
 
 export class Square extends Component {
     constructor(props) {
@@ -20,9 +21,11 @@ export class Square extends Component {
     }
   
     render() {
+    console.log('Square props');
+    console.log(this.props);
     
         return (
-            <div style={this.props.style}
+            <div className={this.props.className}
             onMouseDown={ this.handleClick }
             onMouseUp={ this.handleMouseUp }>
             </div>

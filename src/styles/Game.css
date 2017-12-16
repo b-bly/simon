@@ -1,0 +1,66 @@
+.container {
+    display: flex;
+    justify-content: center;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 220px;
+    height: 216px;
+}
+
+ .start {
+    margin: 5px;
+    width: 65px;
+}
+
+.hide-start {
+    visibility: hidden;
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    background-color: blue;
+    border-radius: 10px;
+    margin: 4px;
+    display: flex;
+}
+.red {
+background-color: rgb(255, 33, 0);
+}
+.blue {
+    background-color: rgb(0, 97, 255)
+}
+.yellow {
+    background-color: rgb(255, 238, 0)
+}
+.green {
+    background-color: rgb(0, 255, 17)
+}
+
+.light-red {
+    background-color: rgb(255, 153, 153);
+}
+.light-blue {
+    background-color: rgb(160, 196, 255);
+}
+.light-yellow {
+    background-color: rgb(252, 246, 161);
+}
+.light-green {
+    background-color: rgb(153, 255, 159);
+}
+
+.quit-button  {
+    margin: 5px;
+}
+
+.info {
+   
+        border: 3px solid;
+        width: 200px;
+        padding: 5px;
+    
+}
