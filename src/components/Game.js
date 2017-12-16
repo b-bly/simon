@@ -296,21 +296,15 @@ export class Game extends Component {
             padding: '4px'
         };
 
-
-        const row1 = this.state.boardStyle[0].map((square, i) =>
-            <Square key={i.toString()}
-                style={square.style}
-                color={square.color}
-                handleClick={this.handleClick}
-                handleMouseUp={this.handleMouseUp} />
-        );
-        const row2 = this.state.boardStyle[1].map((square, i) =>
-            <Square key={i.toString()}
-                style={square.style}
-                color={square.color}
-                handleClick={this.handleClick}
-                handleMouseUp={this.handleMouseUp} />
-        );
+        const board = this.state.boardStyle.map((row, j) => {
+            return row.map((square, i) =>
+                <Square key={i.toString()}
+                    style={square.style}
+                    color={square.color}
+                    handleClick={this.handleClick}
+                    handleMouseUp={this.handleMouseUp} />
+            );
+        });
         const startStyle = {
             margin: '5px',
             width: '65px'
@@ -329,8 +323,7 @@ export class Game extends Component {
                     </div> */}
 
                     <div style={rowStyle}>
-                        {row1}
-                        {row2}
+                        {board}
                     </div>
 
                 </div>
