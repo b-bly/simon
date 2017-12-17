@@ -79,7 +79,7 @@ export class Game extends Component {
                 if (square.color === color) {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
-                    squareCopy.className = 'square ' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                   
+                    squareCopy.className = 'square light-' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                   
                 }
                 return squareCopy;
             });
@@ -103,7 +103,7 @@ export class Game extends Component {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
                     if (lit === true) { //change to lit color
-                        squareCopy.className = 'square ' + 'light-' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
+                        squareCopy.className = 'square light-'  + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
                     } else {
                         squareCopy.className = 'square ' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
                     }
@@ -131,7 +131,7 @@ export class Game extends Component {
     generateSequence() {
         console.log('generateSequence called');
 
-        const sequence = Object.assign({}, this.state.sequence);
+        const sequence = this.state.sequence.slice();
         const random = Math.floor(Math.random() * 4); //random color
         const color = colorMap[random];
         sequence.push(color);
