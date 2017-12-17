@@ -1,7 +1,10 @@
-//to do
+//TO DO
 //encase whole game in lightgray div
-//move css to css file
+//move constants
+//adjustable variables--speed, colors?
 //darken colors
+//have 3 strikes before game over and list in info panel
+//save game and high scores to database
 
 import React, { Component } from 'react';
 import { Square } from './Square';
@@ -18,8 +21,6 @@ import swal from 'sweetalert2';
 // https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753
 const boardArr = [0, 1, 2, 3];
 const colorMap = ['red', 'blue', 'yellow', 'green'];
-
-
 const INTERVAL = 1000;
 const INTERVAL_SPACING = 100;
 
@@ -33,7 +34,6 @@ export class Game extends Component {
         this.generateSequence = this.generateSequence.bind(this);
         this.reset = this.reset.bind(this);
 
-  
         this.state = {
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: [],
@@ -44,7 +44,6 @@ export class Game extends Component {
             message: 'Click start',
             startText: 'Start'
         }
-
     }
 
     createBoard() { //board obj = {style, color, lit(boolean)}
@@ -127,19 +126,16 @@ export class Game extends Component {
     start() {
         console.log('start called');
         this.generateSequence(); //calls playSequence() as callback
-        
+
     }
     generateSequence() {
         console.log('generateSequence called');
 
-        //random sequence of colors
-        let sequenceLength = this.state.sequenceLength;
-        const sequence = [];
-        for (let i = 0; i < sequenceLength; i++) {
-            const random = Math.floor(Math.random() * 4); //random color
-            const color = colorMap[random];
-            sequence.push(color);
-        }
+        const sequence = Object.assign({}, this.state.sequence);
+        const random = Math.floor(Math.random() * 4); //random color
+        const color = colorMap[random];
+        sequence.push(color);
+
         //wait until player completes correct sequence to update sequenceLength
         //or when it is displayed to the user it is one longer than the current sequence
         //sequenceLength++;
@@ -147,7 +143,6 @@ export class Game extends Component {
             sequence: sequence,
             showStart: false,
             message: ''
-
         }, this.playSequence(sequence));
     }
     playSequence(sequence) {
@@ -278,21 +273,19 @@ export class Game extends Component {
                     handleMouseUp={this.handleMouseUp} />
             );
         });
-      
-       console.log('state');
-       console.log(this.state);
-       
+
+        console.log('state');
+        console.log(this.state);
+
         const button = <StartButton className={this.startClass()} startText={this.state.startText} start={this.start} />;
         const quitButton = <QuitButton reset={this.reset} />;
         const sequenceLength = this.state.sequenceLength;
         return (
             <div>
                 <div className={'container'} >
-
                     <div className={'row'}>
-                       {board}
+                        {board}
                     </div>
-
                 </div>
                 <Info className={'container'}
                     sequenceLength={sequenceLength} />
@@ -316,7 +309,7 @@ class QuitButton extends Component {
         this.props.reset(message, won);
     }
     render() {
-  
+
         return (
             <div>
                 <Button bsStyle="warning"
@@ -355,7 +348,7 @@ class StartButton extends Component {
 
     }
     render() {
-    
+
         return (
             <Button id={'start-button'}
                 bsStyle="primary"
