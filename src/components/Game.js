@@ -30,7 +30,6 @@ export class Game extends Component {
     constructor(props) {
         super(props);
         //bind this is needed for functions being called from child components
-        this.handleClick = this.handleClick.bind(this);
         this.start = this.start.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
         this.generateSequence = this.generateSequence.bind(this);
@@ -43,7 +42,8 @@ export class Game extends Component {
             showStart: true,
             sequenceIndex: 0,
             message: 'Click start',
-            startText: 'Start'
+            startText: 'Start',
+            gameStarted: false
         }
     }
 
@@ -70,29 +70,7 @@ export class Game extends Component {
         this.setState(state);
     }
 
-    handleClick(color) {
-        //state: {color: '', style: {backgroundColor: ''}}
-        const stateCopy = this.createBoard();
-        const boardStyle = stateCopy.boardStyle.map((row, i) => {
-            const updatedRow = row.map((square, j) => {
-                let squareCopy = Object.assign({}, square);
-                if (square.color === color) {
-                    //got error when assigning directly to square.style.backgroundColor
-                    // Cannot assign to read only property 'backgroundColor' of object
-                    squareCopy.className = 'square light-' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                   
-                }
-                return squareCopy;
-            });
-            return updatedRow;
-        });
-        this.setState({
-            lit: { red: false, blue: false, yellow: false, green: false },
-            boardStyle: boardStyle
-        });
-        // console.log('handle click Game state: ');
-        // console.log(this.state.boardStyle[0][0]);
 
-    }
 
     changeColor(color, lit) {
         const stateCopy = this.createBoard();
@@ -103,7 +81,7 @@ export class Game extends Component {
                     //got error when assigning directly to square.style.backgroundColor
                     // Cannot assign to read only property 'backgroundColor' of object
                     if (lit === true) { //change to lit color
-                        squareCopy.className = 'square light-'  + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
+                        squareCopy.className = 'square light-' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
                     } else {
                         squareCopy.className = 'square ' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                    
                     }
@@ -142,7 +120,8 @@ export class Game extends Component {
         this.setState({
             sequence: sequence,
             showStart: false,
-            message: ''
+            message: '',
+            gameStarted: true
         }, this.playSequence(sequence));
     }
     playSequence(sequence) {
@@ -165,10 +144,11 @@ export class Game extends Component {
     }
 
     handleMouseUp(color) {
-
-        this.changeColor(color, false);
-        //checkSelection
-        this.checkSelection(color);
+        if (this.state.gameStarted) {
+            this.changeColor(color, false);
+            //checkSelection
+            this.checkSelection(color);
+        }
     }
     checkSelection(color) {
         //check if correct color was clicked on mouseUp
@@ -193,7 +173,6 @@ export class Game extends Component {
         } else { //GAME OVER
             console.log('Game over');
             message = 'Game over';
-
             // this.squareStyle.display = 'none'; //remember to change this back to visible
             this.reset(message, false);
         }
@@ -202,26 +181,24 @@ export class Game extends Component {
         if (won === true) {
             console.log('reset, won = true');
             const sequenceLength = this.state.sequenceLength + 1;
-
             swal({
-                title: 'Nice!',
+                position: 'top',
                 type: 'success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Play next level',
-                showCancelButton: true,
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Not now'
+                title: 'Nice!',
+                showConfirmButton: false,
+                timer: 1000
             }).then((result) => {
-                if (result.value === true) {
-                    this.start();
-                }
+
+                this.start();
+
             });
             this.setState({
                 sequenceIndex: 0,
                 showStart: true,
                 message: message,
                 sequenceLength: sequenceLength,
-                startText: 'play'
+                startText: 'play',
+                gameStarted: false,
             });
         } else {
             console.log('reset, won = false');
@@ -230,7 +207,8 @@ export class Game extends Component {
                 showStart: true,
                 message: message,
                 sequenceLength: 1,
-                sequence: []
+                sequence: [],
+                gameStarted: false,
             });
             swal({
                 title: 'Game over',
@@ -276,7 +254,8 @@ export class Game extends Component {
         console.log(this.state);
 
         const button = <StartButton className={this.startClass()} startText={this.state.startText} start={this.start} />;
-        const quitButton = <QuitButton reset={this.reset} />;
+        const quitButton = <QuitButton disabled={this.state.gameStarted}
+            reset={this.reset} />;
         const sequenceLength = this.state.sequenceLength;
         return (
             <div>
