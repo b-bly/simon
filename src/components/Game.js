@@ -2,15 +2,17 @@
 //encase whole game in lightgray div
 //move constants
 //adjustable variables--speed, colors?
-//darken colors
 //have 3 strikes before game over and list in info panel
 //save game and high scores to database
 
 import React, { Component } from 'react';
 import { Square } from './Square';
+import { Info } from './Info';
+import { Message } from './Message';
+import { QuitButton } from './QuitButton';
+import { StartButton } from './StartButton';
 
-// bootstrap
-import { Button, ListGroup } from 'react-bootstrap';
+
 
 //styles
 import '../styles/Game.css';
@@ -33,7 +35,6 @@ export class Game extends Component {
         this.handleMouseUp = this.handleMouseUp.bind(this);
         this.generateSequence = this.generateSequence.bind(this);
         this.reset = this.reset.bind(this);
-
         this.state = {
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: [],
@@ -59,7 +60,6 @@ export class Game extends Component {
                 row = [];
             }
         });
-
         return {
             lit: { red: false, blue: false, yellow: false, green: false },
             boardStyle: boardStyle
@@ -189,7 +189,6 @@ export class Game extends Component {
                 console.log('end of sequence');
                 message = 'Click start';
                 this.reset(message, true);
-
             }
         } else { //GAME OVER
             console.log('Game over');
@@ -210,7 +209,6 @@ export class Game extends Component {
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Play next level',
                 showCancelButton: true,
-
                 cancelButtonColor: '#d33',
                 cancelButtonText: 'Not now'
             }).then((result) => {
@@ -218,7 +216,6 @@ export class Game extends Component {
                     this.start();
                 }
             });
-
             this.setState({
                 sequenceIndex: 0,
                 showStart: true,
@@ -228,7 +225,6 @@ export class Game extends Component {
             });
         } else {
             console.log('reset, won = false');
-
             this.setState({
                 sequenceIndex: 0,
                 showStart: true,
@@ -244,7 +240,6 @@ export class Game extends Component {
                 showCancelButton: true,
                 cancelButtonColor: '#d33',
                 cancelButtonText: 'Not now'
-
             }).then((result) => {
                 if (result.value === true) {
                     this.start();
@@ -302,90 +297,8 @@ export class Game extends Component {
     }
 }
 
-class QuitButton extends Component {
-    constructor(props) {
-        super(props);
-        this.props = props;
-        this.reset = this.reset.bind(this);
-    }
-    reset(message, won) {
-        this.props.reset(message, won);
-    }
-    render() {
 
-        return (
-            <div>
-                <Button bsStyle="warning"
-                    className={'quit-button'}
-                    onClick={() => { this.reset('Game over', false) }}
-                >Quit</Button>
-            </div>
-        );
-    }
-}
-class Message extends Component {
-    constructor(props) {
-        super(props);
-        this.props = props;
-        this.style = {};
-    }
 
-    render() {
-        this.style = Object.assign({}, this.props.style);
-        this.style.fontSize = '30px';
-        return (
-            <div style={this.style}> {this.props.message}
-            </div>
-        )
-    }
-}
-
-class StartButton extends Component {
-    constructor(props) {
-        super(props);
-        this.props = props;
-        this.start = this.start.bind(this);
-    }
-    start() {
-        this.props.start();
-
-    }
-    render() {
-
-        return (
-            <Button id={'start-button'}
-                bsStyle="primary"
-                className={this.props.className}
-                onClick={() => { this.start() }}
-            >{this.props.startText}</Button>
-        );
-    }
-}
-
-class Info extends Component {
-    constructor(props) {
-        super(props);
-        this.props = props;
-        this.style = Object.assign({}, this.props.style);
-        this.style.margin = '5px';
-        this.childStyle = {
-            border: '3px solid',
-            width: '200px',
-            padding: '5px',
-        }
-
-        this.style.justifyContent = 'center';
-    }
-    render() {
-        return (
-            <div className={this.props.className}>
-                <div className={'info'}>
-                    Sequence length: {this.props.sequenceLength}
-                </div>
-            </div>
-        );
-    }
-}
 
 // class SquareRow extends Component {
 //     constructor(props) {
