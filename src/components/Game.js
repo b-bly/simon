@@ -21,8 +21,8 @@ import swal from 'sweetalert2';
 // https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753
 const boardArr = [0, 1, 2, 3];
 const colorMap = ['red', 'blue', 'yellow', 'green'];
-const INTERVAL = 1000;
-const INTERVAL_SPACING = 100;
+const INTERVAL = 500;
+const INTERVAL_SPACING = 200;
 
 export class Game extends Component {
     constructor(props) {
@@ -153,12 +153,14 @@ export class Game extends Component {
         //const sequence = this.state.sequence;
 
         sequence.forEach((color, i) => {
+            //x = on, y = off
+            //x = i*1.1	y = 1 + x
             setTimeout(() => {
                 this.changeColor(color, true);
-            }, INTERVAL * i + INTERVAL_SPACING * i);
+            }, (INTERVAL + INTERVAL_SPACING) * i);
             setTimeout(() => {
                 this.changeColor(color, false);
-            }, INTERVAL * i + INTERVAL);
+            }, (INTERVAL + INTERVAL_SPACING) * i + INTERVAL);
         });
     }
 
@@ -231,7 +233,8 @@ export class Game extends Component {
                 sequenceIndex: 0,
                 showStart: true,
                 message: message,
-                sequenceLength: 1
+                sequenceLength: 1,
+                sequence: []
             });
             swal({
                 title: 'Game over',
