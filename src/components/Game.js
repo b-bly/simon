@@ -25,6 +25,10 @@ const boardArr = [0, 1, 2, 3];
 const colorMap = ['red', 'blue', 'yellow', 'green'];
 const INTERVAL = 500;
 const INTERVAL_SPACING = 200;
+const SQUARE_WIDTH_INT = 200;
+const SQUARE_WIDTH = SQUARE_WIDTH_INT + 'px';
+const ROW_WIDTH = SQUARE_WIDTH_INT * 2.2 + 'px';
+const ROW_HEIGHT = SQUARE_WIDTH_INT * 2 + 16 + 'px';
 
 export class Game extends Component {
     constructor(props) {
@@ -32,6 +36,7 @@ export class Game extends Component {
         //bind this is needed for functions being called from child components
         this.start = this.start.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
+        this.handleMouseDown = this.handleMouseDown.bind(this);
         this.generateSequence = this.generateSequence.bind(this);
         this.reset = this.reset.bind(this);
         this.state = {
@@ -44,6 +49,34 @@ export class Game extends Component {
             message: 'Click start',
             startText: 'Start',
             gameStarted: false
+        }
+    }
+
+
+
+    handleMouseDown(color) {
+        if (this.state.gameStarted) {
+            //state: {color: '', style: {backgroundColor: ''}}
+            const stateCopy = this.createBoard();
+            const boardStyle = stateCopy.boardStyle.map((row, i) => {
+                const updatedRow = row.map((square, j) => {
+                    let squareCopy = Object.assign({}, square);
+                    if (square.color === color) {
+                        //got error when assigning directly to square.style.backgroundColor
+                        // Cannot assign to read only property 'backgroundColor' of object
+                        squareCopy.className = 'square light-' + colorMap[i * 2 + j]; //change 2d array index to 1D array index                   
+                    }
+                    return squareCopy;
+                });
+                return updatedRow;
+            });
+            this.setState({
+                lit: { red: false, blue: false, yellow: false, green: false },
+                boardStyle: boardStyle
+            });
+            // console.log('handle click Game state: ');
+            // console.log(this.state.boardStyle[0][0]);
+
         }
     }
 
@@ -188,9 +221,9 @@ export class Game extends Component {
                 showConfirmButton: false,
                 timer: 1000
             }).then((result) => {
-
-                this.start();
-
+                setTimeout(() => {
+                    this.start();
+                }, 400);
             });
             this.setState({
                 sequenceIndex: 0,
@@ -222,8 +255,7 @@ export class Game extends Component {
                 if (result.value === true) {
                     this.start();
                 }
-            }
-                );
+            });
         }
     }
     componentWillMount() {
@@ -239,13 +271,18 @@ export class Game extends Component {
     }
 
     render() {
-
+        const squareStyle = { width: SQUARE_WIDTH, height: SQUARE_WIDTH };
+        const rowStyle = {
+            width: ROW_WIDTH,
+            height: ROW_HEIGHT
+        };
         const board = this.state.boardStyle.map((row, j) => {
             return row.map((square, i) =>
                 <Square key={i.toString()}
                     className={square.className}
                     color={square.color}
-                    handleClick={this.handleClick}
+                    style={squareStyle}
+                    handleMouseDown={this.handleMouseDown}
                     handleMouseUp={this.handleMouseUp} />
             );
         });
@@ -260,7 +297,8 @@ export class Game extends Component {
         return (
             <div>
                 <div className={'container'} >
-                    <div className={'row'}>
+                    <div className={'row'}
+                        style={rowStyle}>
                         {board}
                     </div>
                 </div>
