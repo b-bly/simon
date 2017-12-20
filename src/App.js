@@ -14,13 +14,10 @@ class App extends Component {
 
 
   render() {
-    const center = {
-      display: 'flex',
-      justifyContent: 'center'
-    }
+  
     return (
       <div className="App App-title">
-        <h1 style={center}>Simon</h1>
+        <h1 className={'App-center'}>Simon</h1>
         <Game />
       </div>
     );

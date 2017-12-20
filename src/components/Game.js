@@ -7,7 +7,7 @@
 
 import React, { Component } from 'react';
 import { Square } from './Square';
-import { Info } from './Info';
+// import { Info } from './Info';
 import { Message } from './Message';
 import { QuitButton } from './QuitButton';
 import { StartButton } from './StartButton';
@@ -213,11 +213,13 @@ export class Game extends Component {
     reset(message, won) {
         if (won === true) {
             console.log('reset, won = true');
+            const score = this.state.sequenceLength;
             const sequenceLength = this.state.sequenceLength + 1;
             swal({
-                position: 'top',
+                position: '',
                 type: 'success',
                 title: 'Nice!',
+                text: 'Score: ' + score,
                 showConfirmButton: false,
                 timer: 1000
             }).then((result) => {
@@ -235,6 +237,7 @@ export class Game extends Component {
             });
         } else {
             console.log('reset, won = false');
+            const score = this.state.sequenceLength - 1;
             this.setState({
                 sequenceIndex: 0,
                 showStart: true,
@@ -245,6 +248,7 @@ export class Game extends Component {
             });
             swal({
                 title: 'Game over',
+                text: 'Score: ' + score,
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'New game',
@@ -290,9 +294,13 @@ export class Game extends Component {
         console.log('state');
         console.log(this.state);
 
-        const button = <StartButton className={this.startClass()} startText={this.state.startText} start={this.start} />;
-        const quitButton = <QuitButton disabled={this.state.gameStarted}
+        let button = null;
+        if (this.state.gameStarted === false) {
+        button = <StartButton className={this.startClass()} startText={this.state.startText} start={this.start} />;
+        } else { 
+            button = <QuitButton 
             reset={this.reset} />;
+        }
         const sequenceLength = this.state.sequenceLength;
         return (
             <div>
@@ -302,10 +310,9 @@ export class Game extends Component {
                         {board}
                     </div>
                 </div>
-                <Info className={'container'}
-                    sequenceLength={sequenceLength} />
+                
                 <div className={'container'}>
-                    {button} {quitButton}
+                    {button}
                 </div>
 
 
@@ -314,59 +321,3 @@ export class Game extends Component {
     }
 }
 
-
-
-
-// class SquareRow extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.props = props;
-//         this.row = props.row;
-//         this.handleClick = this.handleClick.bind(this);
-
-//     }
-
-//     handleClick(color) {
-//         this.props.handleClick(color);
-//     }
-
-//     render() {
-//         const style = {
-//             display: 'flex',
-//             flexDirection: 'row'
-//         };
-
-//         const squares = this.row.map((square, i) =>
-//             <div key={i.toString()} style={style}>
-//                 <Square key={i.toString()}
-//                     style={square.style}
-//                     color={square.color}
-//                     handleClick={this.handleClick} />
-//             </div>
-//         );
-
-
-//         return (
-//             <div>
-//                 {squares}
-//             </div>
-//         );
-//     }
-// }
-
-//Hard code version of what maps create
-        // <div className={'container'} style={this.center}>
-
-            //     <div className={'row'}>
-            //         {this.boardStyle[0].map((square, i) =>
-            //             <Square key={i.toString()} style={square.style} />)
-            //         }
-            //     </div>
-            //     <div className={'row'}>
-
-            //             {this.boardStyle[1].map((square, i) =>
-            //                 <Square key={i.toString()} style={square.style} />)
-            //             }
-
-            //     </div>
-            // </div>

@@ -16,7 +16,7 @@ export class QuitButton extends Component {
         return (
             <div>
                 <Button bsStyle="warning"
-                disabled={!this.props.disabled}
+                
                     className={'quit-button'}
                     onClick={() => { this.reset('Game over', false) }}
                 >Quit</Button>
