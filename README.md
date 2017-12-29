@@ -2,6 +2,8 @@
 
 ![alt text](/simon.png)
 
+Link to the [app](https://b-bly.github.io/simon/).
+
 ## Built With
 
 ReactJS and SweetAlert2.

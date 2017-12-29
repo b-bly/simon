@@ -291,8 +291,8 @@ export class Game extends Component {
             );
         });
 
-        console.log('state');
-        console.log(this.state);
+        console.log('board');
+        console.log(board);
 
         let button = null;
         if (this.state.gameStarted === false) {
