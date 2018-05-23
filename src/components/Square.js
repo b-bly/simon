@@ -12,7 +12,6 @@ export class Square extends Component {
 
     }
 
-
     handleMouseUp() {
         this.props.handleMouseUp(this.color);
     }

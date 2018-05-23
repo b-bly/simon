@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // bootstrap
-import { Button, ListGroup } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 export class QuitButton extends Component {
     constructor(props) {
