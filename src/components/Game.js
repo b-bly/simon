@@ -81,6 +81,7 @@ export class Game extends Component {
         // call const board = this.createBoard and pass to generateSequence and then play Sequence
         this.generateSequence(); //calls playSequence() as callback
     }
+
     generateSequence() {
         const sequence = this.state.sequence.slice();
         const random = Math.floor(Math.random() * 4); //random color
@@ -188,14 +189,6 @@ export class Game extends Component {
                     this.start();
                 }
             });
-        }
-    }
-
-    startClass() {
-        if (this.state.showStart === true) {
-            return 'start';
-        } else {
-            return 'start hide-start';
         }
     }
 

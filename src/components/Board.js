@@ -17,15 +17,6 @@ import '../styles/Game.css';
 
 // This was helpful: 
 // https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753
-const boardArr = [0, 1, 2, 3];
-const colorMap = ['red', 'blue', 'yellow', 'green'];
-const INTERVAL = 500;
-const INTERVAL_SPACING = 200;
-const SQUARE_WIDTH_INT = 200;
-const SQUARE_WIDTH = SQUARE_WIDTH_INT + 'px';
-const ROW_WIDTH = SQUARE_WIDTH_INT * 2.2 + 'px';
-const ROW_HEIGHT = SQUARE_WIDTH_INT * 2 + 16 + 'px';
-
 export class Board extends Component {
     constructor(props) {
         super(props);
@@ -44,10 +35,10 @@ export class Board extends Component {
     createBoard() { //board obj = {style, color, lit(boolean)}
         let row = [];
         const boardStyle = [];
-        boardArr.forEach((num, i) => {
+        CONSTANTS.boardArr.forEach((num, i) => {
             let property = {};
-            property.color = colorMap[i];
-            property.className = 'square ' + colorMap[i];
+            property.color = CONSTANTS.colorMap[i];
+            property.className = 'square ' + CONSTANTS.colorMap[i];
             row.push(property);
             if ((i + 1) % 2 === 0) { //row end
                 boardStyle.push(row);
@@ -89,8 +80,6 @@ export class Board extends Component {
 
     render() {
 
-        //move constants to Square.js
-        const squareStyle = { width: CONSTANTS.SQUARE_WIDTH, height: CONSTANTS.SQUARE_WIDTH };
         const rowStyle = {
             width: CONSTANTS.ROW_WIDTH,
             height: CONSTANTS.ROW_HEIGHT
@@ -100,7 +89,6 @@ export class Board extends Component {
                 <Square key={i.toString()}
                     className={square.className}
                     color={square.color}
-                    style={squareStyle}
                     handleMouseDown={this.handleMouseDown}
                     handleMouseUp={this.handleMouseUp} />
             );

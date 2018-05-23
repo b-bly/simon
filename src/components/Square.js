@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { CONSTANTS } from './Constants';
 import '../styles/Game.css';
 
 export class Square extends Component {
@@ -20,12 +21,11 @@ export class Square extends Component {
     }
 
     render() {
-        console.log('Square props');
-        console.log(this.props);
+        const squareStyle = { width: CONSTANTS.SQUARE_WIDTH, height: CONSTANTS.SQUARE_WIDTH };
 
         return (
             <div className={this.props.className}
-                style={this.props.style}
+                style={squareStyle}
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}>
             </div>
