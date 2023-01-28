@@ -82,6 +82,7 @@ export class Board extends Component {
 
         const rowStyle = {
             width: CONSTANTS.ROW_WIDTH,
+            maxWidth: CONSTANTS.ROW_WIDTH, // to override media queries that set max-width
             height: CONSTANTS.ROW_HEIGHT
         };
         const board = this.props.boardStyle.map((row, j) => {

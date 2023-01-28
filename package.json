@@ -6,7 +6,8 @@
     "react": "^16.2.0",
     "react-bootstrap": "^0.31.5",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.0.17"
+    "react-scripts": "1.0.17",
+    "sweetalert2": "^10.16.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -19,5 +20,8 @@
   "homepage": "https://b-bly.github.io/simon",
   "devDependencies": {
     "gh-pages": "^1.1.0"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }

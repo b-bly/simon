@@ -11,7 +11,7 @@ import { Board } from './Board';
 //styles
 import '../styles/Game.css';
 //sweetalerts2
-import swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 // CONSTANTS
 import { CONSTANTS } from './Constants';
 
@@ -148,7 +148,7 @@ export class Game extends Component {
             console.log('reset, won = true');
             const score = this.state.sequenceLength;
             const sequenceLength = this.state.sequenceLength + 1;
-            swal({
+            Swal.fire({
                 position: '',
                 type: 'success',
                 title: 'Nice!',
@@ -175,7 +175,7 @@ export class Game extends Component {
                 sequence: [],
                 gameStarted: false,
             });
-            swal({
+            Swal.fire({
                 title: 'Game over',
                 text: 'Score: ' + score,
                 type: 'warning',
